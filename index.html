@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html class="dark" lang="es">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ZONA CHIC - Wi-Fi Gratis</title>
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <!-- Iconos Google -->
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+
+  <!-- Fuentes -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
+
+  <script>
+    /* ======== PALETA GLOBAL (edítala aquí) ======== */
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            /* Color de marca */
+            primary: "#7C3AED",            // violeta intenso (acento)
+            /* Fondos y texto */
+            "background-light": "#F7F7FB", // fondo claro (alto contraste)
+            "background-dark":  "#0F0F16", // fondo oscuro
+            "content-light":    "#0F172A", // texto en claro (casi negro)
+            "content-dark":     "#F8FAFC", // texto en oscuro (casi blanco)
+          },
+          fontFamily: { display: ["Poppins","Inter","sans-serif"] },
+          borderRadius: { DEFAULT:"0.5rem", lg:"1rem", xl:"1.5rem", full:"9999px" },
+          keyframes: {
+            waterflow:{ "0%":{backgroundPosition:"0% 50%"},"50%":{backgroundPosition:"100% 50%"},"100%":{backgroundPosition:"0% 50%"} },
+            shimmer:{ "0%":{transform:"translateX(-150%)"},"100%":{transform:"translateX(150%)"} },
+            blobs:{ "0%,100%":{transform:"translate(0,0) scale(1)"},"50%":{transform:"translate(4px,-3px) scale(1.05)"} },
+            dotty:{ "0%,20%":{opacity:.2,transform:"translateY(0)"},"50%":{opacity:1,transform:"translateY(-2px)"},"100%":{opacity:.2,transform:"translateY(0)"} }
+          },
+          animation: {
+            waterflow:"waterflow 8s ease-in-out infinite",
+            shimmer:"shimmer 2.2s linear infinite",
+            blobs:"blobs 10s ease-in-out infinite",
+            dotty:"dotty 1s ease-in-out infinite"
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { min-height: max(884px, 100dvh); }
+
+    /* Vidrio */
+    .glassmorphism-dark {
+      background: rgba(255,255,255,0.08);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.18);
+    }
+    .glassmorphism-light {
+      background: rgba(255,255,255,0.65);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(20,20,20,0.05);
+    }
+
+    /* Botón “agua” (usa primario + violeta claro para contraste) */
+    .btn-agua {
+      position: relative; overflow: hidden; isolation: isolate;
+      color: white;
+      background:
+        radial-gradient(120% 180% at 0% 0%, rgba(255,255,255,.35), rgba(255,255,255,.08) 35%, rgba(255,255,255,.02) 60%),
+        linear-gradient(135deg, #7C3AED 0%, #A78BFA 50%, #7C3AED 100%);
+      background-size: 200% 200%;
+      animation: waterflow 8s ease-in-out infinite;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.35), 0 10px 24px rgba(124,58,237,.35);
+    }
+    .btn-agua::before{
+      content:""; position:absolute; inset:-20%;
+      background:
+        radial-gradient(40% 60% at 30% 30%, rgba(255,255,255,.45), transparent 60%),
+        radial-gradient(30% 50% at 70% 70%, rgba(255,255,255,.25), transparent 60%);
+      filter: blur(8px); animation: blobs 10s ease-in-out infinite; z-index:0; pointer-events:none;
+    }
+    .btn-agua::after{
+      content:""; position:absolute; inset:0;
+      background: linear-gradient(100deg, transparent 30%, rgba(255,255,255,.4) 50%, transparent 70%);
+      transform: translateX(-150%); animation: shimmer 2.2s linear infinite; mix-blend-mode: screen; z-index:1; pointer-events:none;
+    }
+    .btn-agua > span { position: relative; z-index: 2; font-weight: 700; }
+    .btn-agua[disabled]{ opacity:.85; cursor:not-allowed; filter: grayscale(.05) saturate(.9); }
+
+    /* Indicador de conexión */
+    .dot-typing{ display:inline-flex; gap:4px; margin-left:.5rem; vertical-align:middle; }
+    .dot-typing i{ width:6px; height:6px; border-radius:9999px; background:white; opacity:.9; animation: dotty 1.2s ease-in-out infinite; }
+    .dot-typing i:nth-child(2){ animation-delay:.15s }
+    .dot-typing i:nth-child(3){ animation-delay:.3s }
+
+    /* Carrusel */
+    .no-scrollbar::-webkit-scrollbar{ display:none; }
+    .no-scrollbar{ -ms-overflow-style:none; scrollbar-width:none; }
+
+    /* Tarjetas servicio (claras y legibles en ambos modos) */
+    .card-perfumes { background: linear-gradient(135deg, #F3E8FFCC, #FDECF3BB); }
+    .card-recargas { background: linear-gradient(135deg, #E6F2FFCC, #EEF9FFBB); }
+    .card-costura  { background: linear-gradient(135deg, #E8FFF3CC, #F4FFF9BB); }
+
+    /* Mejora legibilidad de iconos */
+    .icon-strong { color: var(--tw-prose-body, #7C3AED); }
+  </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display text-content-light dark:text-content-dark transition-colors duration-300">
+<div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm">
+    <div class="flex items-center p-4">
+      <div class="text-primary flex size-10 shrink-0 items-center justify-center">
+        <span class="material-symbols-outlined text-4xl">storefront</span>
+      </div>
+      <div class="flex-1">
+        <h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">ZONA CHIC</h2>
+        <p class="text-xs font-medium leading-normal text-content-light/70 dark:text-content-dark/70">Bienvenido a ZONA CHIC</p>
+      </div>
+      <button id="theme-toggle" class="ml-4 p-2 rounded-full text-content-light/70 dark:text-content-dark/70 hover:bg-gray-200 dark:hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-primary" aria-label="Cambiar tema">
+        <span class="material-symbols-outlined dark:hidden">dark_mode</span>
+        <span class="material-symbols-outlined hidden dark:inline">light_mode</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="flex-1 px-4 pb-32 pt-6">
+    <h1 class="tracking-tight text-[32px] font-extrabold leading-tight text-center">Conéctate y descubre tu estilo</h1>
+    <p class="text-content-light/80 dark:text-content-dark/80 text-base font-normal leading-normal text-center pt-2">Calle Falsa 123, Ciudad Ficticia</p>
+
+    <!-- 3 bloques superiores (respetados) -->
+    <div class="grid grid-cols-1 gap-4 pt-8">
+      <div class="flex flex-col gap-3 rounded-xl glassmorphism-light dark:glassmorphism-dark p-4">
+        <div class="flex items-center gap-4">
+          <div class="text-primary flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/15">
+            <span class="material-symbols-outlined text-2xl">diamond</span>
+          </div>
+          <div>
+            <p class="text-base font-semibold leading-normal">Perfumería</p>
+            <p class="text-sm text-content-light/70 dark:text-content-dark/70">Encuentra tu aroma distintivo</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-3 rounded-xl glassmorphism-light dark:glassmorphism-dark p-4">
+        <div class="flex items-center gap-4">
+          <div class="text-primary flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/15">
+            <span class="material-symbols-outlined text-2xl">payments</span>
+          </div>
+          <div>
+            <p class="text-base font-semibold leading-normal">Recargas y Pagos</p>
+            <p class="text-sm text-content-light/70 dark:text-content-dark/70">Paga servicios y recarga al instante</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-3 rounded-xl glassmorphism-light dark:glassmorphism-dark p-4">
+        <div class="flex items-center gap-4">
+          <div class="text-primary flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/15">
+            <span class="material-symbols-outlined text-2xl">cut</span>
+          </div>
+          <div>
+            <p class="text-base font-semibold leading-normal">Ropa y Arreglos</p>
+            <p class="text-sm text-content-light/70 dark:text-content-dark/70">Ajustes expertos para el calce perfecto</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Promos (respetadas) -->
+    <h3 class="text-lg font-bold leading-tight tracking-[-0.015em] pt-8 pb-4">Promociones</h3>
+    <div class="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
+      <div class="flex-none w-64">
+        <div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg" style='background-image:url("https://www.faroshop.co/cdn/shop/collections/Imagenes_Colecciones_3.png?v=1725915039");'></div>
+        <p class="text-base font-medium leading-normal mt-2">10% de descuento en tu primera compra</p>
+      </div>
+      <div class="flex-none w-64">
+        <div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg" style='background-image:url("https://recargasypagosdeservicios.com/wp-content/uploads/2021/07/paquetes_operadoras.jpg");'></div>
+        <p class="text-base font-medium leading-normal mt-2">Recargas electrónicas</p>
+      </div>
+      <div class="flex-none w-64">
+        <div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg" style='background-image:url("https://www.recargasrm.com/imagenes/portada/principal-todos.png");'></div>
+        <p class="text-base font-medium leading-normal mt-2">Recargas de videojuegos y servicio de streaming</p>
+      </div>
+      <div class="flex-none w-64">
+        <div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg" style='background-image:url("https://lh3.googleusercontent.com/aida-public/AB6AXuAbMmlJB5Ea1kHs3vb_oFiR8l_9kiq-CPYA218eFgvj1XX6q0-sVhRRdWvsr7OwpsgW2al9W2e0FT9LXc52P5qbLrcUhb8Ks5imQLgMoAnSHaX7tvAGN-ttRsUNlWhFlXG3_gmgCueHUGoOqfPe53jig7grjO0urTGr07cF00ytSX9vbHpPDjBWTt6q_pUAM7olT4ce5bqmuJe026PY7bldOzprdChpyfciHXVZGhjnN6oXDSAMM9jD4JEehQOhNHCu8EEZlHvRwW4n");'></div>
+        <p class="text-base font-medium leading-normal mt-2">Confección de pijamas, arreglo de ropa</p>
+      </div>
+    </div>
+
+    <!-- Servicios dinámicos (sustituyen la sección de suscripción) -->
+    <section class="rounded-xl glassmorphism-light dark:glassmorphism-dark p-6 mt-8" id="servicios">
+      <h3 class="text-lg font-bold leading-tight tracking-[-0.015em]">Elige tu servicio</h3>
+      <p class="text-sm font-medium leading-normal text-content-light/70 dark:text-content-dark/70 mt-2">
+        Te abriremos WhatsApp con un mensaje listo para enviar.
+      </p>
+
+      <div class="relative mt-4">
+        <div id="serviciosSlider"
+             class="no-scrollbar flex gap-4 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2">
+          <!-- Perfumes -->
+          <article class="min-w-[88%] sm:min-w-[60%] md:min-w-[48%] lg:min-w-[36%] snap-center rounded-2xl card-perfumes p-5 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5">
+            <div class="flex items-start gap-3">
+              <span class="material-symbols-outlined text-primary text-3xl">diamond</span>
+              <div>
+                <h4 class="text-base font-bold">Perfumes</h4>
+                <p class="text-sm text-content-light/80 dark:text-content-dark/80">
+                  Novedades y ofertas para tu aroma ideal.
+                </p>
+              </div>
+            </div>
+            <button data-ws="perfumes" class="mt-4 w-full btn-agua py-2.5 px-4 rounded-xl">
+              <span>Contactar por WhatsApp</span>
+            </button>
+          </article>
+
+          <!-- Recargas -->
+          <article class="min-w-[88%] sm:min-w-[60%] md:min-w-[48%] lg:min-w-[36%] snap-center rounded-2xl card-recargas p-5 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5">
+            <div class="flex items-start gap-3">
+              <span class="material-symbols-outlined text-primary text-3xl">payments</span>
+              <div>
+                <h4 class="text-base font-bold">Recargas electrónicas o videojuegos</h4>
+                <p class="text-sm text-content-light/80 dark:text-content-dark/80">
+                  Pines, recargas y promos al instante.
+                </p>
+              </div>
+            </div>
+            <button data-ws="recargas" class="mt-4 w-full btn-agua py-2.5 px-4 rounded-xl">
+              <span>Contactar por WhatsApp</span>
+            </button>
+          </article>
+
+          <!-- Costura -->
+          <article class="min-w-[88%] sm:min-w-[60%] md:min-w-[48%] lg:min-w-[36%] snap-center rounded-2xl card-costura p-5 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5">
+            <div class="flex items-start gap-3">
+              <span class="material-symbols-outlined text-primary text-3xl">cut</span>
+              <div>
+                <h4 class="text-base font-bold">Servicio de costura</h4>
+                <p class="text-sm text-content-light/80 dark:text-content-dark/80">
+                  Arreglos y ajustes con entrega rápida.
+                </p>
+              </div>
+            </div>
+            <button data-ws="costura" class="mt-4 w-full btn-agua py-2.5 px-4 rounded-xl">
+              <span>Contactar por WhatsApp</span>
+            </button>
+          </article>
+        </div>
+      </div>
+
+      <a href="#connect-footer" class="text-primary text-sm font-semibold mt-4 inline-block">Omitir y conectar</a>
+    </section>
+
+    <!-- Info -->
+    <div class="rounded-xl glassmorphism-light dark:glassmorphism-dark p-6 mt-8">
+      <h3 class="text-lg font-bold leading-tight tracking-[-0.015em]">Ubicación y Horarios</h3>
+      <p class="text-sm font-medium leading-normal text-content-light/70 dark:text-content-dark/70 mt-2">Calle Falsa 123, Ciudad Ficticia</p>
+      <p class="text-sm font-medium leading-normal text-content-light/70 dark:text-content-dark/70">Lun - Sáb: 9:00 a 20:00</p>
+    </div>
+
+    <div class="mt-8 text-center">
+      <h3 class="text-base font-semibold leading-tight">Notas de Wi-Fi</h3>
+      <p class="text-xs font-medium leading-normal text-content-light/60 dark:text-content-dark/70 mt-1">Acceso gratuito por 1 hora. Aplica política de uso justo.</p>
+    </div>
+  </main>
+
+  <!-- Footer: conectar -->
+  <footer id="connect-footer" class="fixed bottom-0 left-0 right-0 p-4 bg-background-light/85 dark:bg-background-dark/85 backdrop-blur-sm z-10">
+    <button id="connectBtn" class="w-full btn-agua text-lg py-4 px-6 rounded-xl transition-colors">
+      <span id="connectLabel">Preparando red… 15s</span>
+      <span id="connectDots" class="dot-typing align-middle" aria-hidden="true" style="display:inline-flex;">
+        <i></i><i></i><i></i>
+      </span>
+    </button>
+    <p class="text-center text-xs text-content-light/60 dark:text-content-dark/70 mt-4">© 2025 ZONA CHIC. Todos los derechos reservados.</p>
+  </footer>
+</div>
+
+<script>
+  /* ===== Tema claro/oscuro ===== */
+  const themeToggle = document.getElementById('theme-toggle');
+  themeToggle?.addEventListener('click', () => document.documentElement.classList.toggle('dark'));
+
+  /* ===== WhatsApp: coloca tus números (formato 5939XXXXXXXX) ===== */
+  const WA_NUM_PERFUMES = "593980441321";
+  const WA_NUM_RECARGAS = "593995490299";
+  const WA_NUM_COSTURA  = "593996784542";
+
+  function wsMensaje(tipo) {
+    const base = "Hola, vengo desde el Wi-Fi de ZONA CHIC. ";
+    switch (tipo) {
+      case "perfumes": return base + "Deseo obtener el catálogo de perfumes y recibir sus ofertas.";
+      case "recargas": return base + "Deseo realizar una recarga electrónicas/videojuegos y recibir las promociones.";
+      case "costura":  return base + "Deseo acceder al servicio de costura y recibir novedades.";
+    }
+  }
+  function abrirWhatsApp(tipo) {
+    const mapa = { perfumes: WA_NUM_PERFUMES, recargas: WA_NUM_RECARGAS, costura: WA_NUM_COSTURA };
+    const numero = mapa[tipo] || WA_NUM_PERFUMES;
+    const texto  = wsMensaje(tipo);
+    const url = `https://wa.me/${numero}?text=${encodeURIComponent(texto)}`;
+    window.open(url, "_blank", "noopener");
+  }
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('button[data-ws]');
+    if (!btn) return;
+    abrirWhatsApp(btn.dataset.ws);
+  });
+
+  /* ===== Carrusel (auto-avance, accesible) ===== */
+  const slider = document.getElementById('serviciosSlider');
+  let idx = 0, autoplayTimer = null;
+  function autoplay() {
+    const cards = [...slider.children];
+    if (!cards.length) return;
+    idx = (idx + 1) % cards.length;
+    cards[idx].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }
+  function startAuto(){ if(!autoplayTimer) autoplayTimer = setInterval(autoplay, 3800); }
+  function stopAuto(){ clearInterval(autoplayTimer); autoplayTimer = null; }
+  startAuto();
+  slider.addEventListener('pointerdown', stopAuto);
+  slider.addEventListener('pointerup', startAuto);
+  slider.addEventListener('mouseenter', stopAuto);
+  slider.addEventListener('mouseleave', startAuto);
+  /* Respeta preferencias del usuario */
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) stopAuto();
+
+  /* ===== Botón Conectar (15s de preparación + animación) ===== */
+  const connectBtn   = document.getElementById('connectBtn');
+  const connectLabel = document.getElementById('connectLabel');
+  const connectDots  = document.getElementById('connectDots');
+
+  let restante = 15;
+  connectBtn.setAttribute('disabled', 'true');
+  connectLabel.textContent = `Preparando red… ${restante}s`;
+  connectDots.style.display = 'inline-flex';
+
+  const t = setInterval(() => {
+    restante--;
+    connectLabel.textContent = `Preparando red… ${restante}s`;
+    if (restante <= 0) {
+      clearInterval(t);
+      connectBtn.removeAttribute('disabled');
+      connectLabel.textContent = 'Conectarse a Internet';
+      connectDots.style.display = 'none';
+    }
+  }, 1000);
+
+  const CONNECT_REDIRECT_URL = "#conectado"; // pon tu URL/portal cautivo si quieres redirigir
+  connectBtn.addEventListener('click', () => {
+    if (connectBtn.hasAttribute('disabled')) return;
+    connectBtn.setAttribute('disabled','true');
+    connectBtn.setAttribute('aria-busy','true');
+    connectLabel.textContent = 'Estableciendo conexión…';
+    connectDots.style.display = 'inline-flex';
+    setTimeout(() => {
+      connectBtn.removeAttribute('aria-busy');
+      connectLabel.textContent = 'Conectado ✓';
+      connectDots.style.display = 'none';
+      if (CONNECT_REDIRECT_URL && CONNECT_REDIRECT_URL !== "#conectado") {
+        window.location.href = CONNECT_REDIRECT_URL;
+      }
+    }, 1800);
+  });
+</script>
+</body>
+</html>
