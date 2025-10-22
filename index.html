@@ -5,13 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>ZONA CHIC - Wi-Fi Gratis</title>
 
-  <!-- Tailwind -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
 
-  <!-- Iconos Google -->
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
 
-  <!-- Fuentes -->
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;600&display=swap" rel="stylesheet"/>
@@ -116,7 +113,6 @@
 <body class="bg-background-light dark:bg-background-dark font-display text-content-light dark:text-content-dark transition-colors duration-300">
 <div class="relative flex min-h-screen w-full flex-col overflow-x-hidden">
 
-  <!-- Header -->
   <header class="sticky top-0 z-10 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-sm">
     <div class="flex items-center p-4">
       <div class="text-primary flex size-10 shrink-0 items-center justify-center">
@@ -133,12 +129,10 @@
     </div>
   </header>
 
-  <!-- Main -->
   <main class="flex-1 px-4 pb-32 pt-6">
     <h1 class="tracking-tight text-[32px] font-extrabold leading-tight text-center">Conéctate y descubre tu estilo</h1>
     <p class="text-content-light/80 dark:text-content-dark/80 text-base font-normal leading-normal text-center pt-2">Pérez Pareja 0-76 y Gonzalo Suárez Diagonal a la panadería España</p>
 
-    <!-- 3 bloques superiores (respetados) -->
     <div class="grid grid-cols-1 gap-4 pt-8">
       <div class="flex flex-col gap-3 rounded-xl glassmorphism-light dark:glassmorphism-dark p-4">
         <div class="flex items-center gap-4">
@@ -177,9 +171,8 @@
       </div>
     </div>
 
-    <!-- Promos (respetadas) -->
     <h3 class="text-lg font-bold leading-tight tracking-[-0.015em] pt-8 pb-4">Promociones</h3>
-    <div class="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
+    <div id="serviciosSlider" class="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
       <div class="flex-none w-64">
         <div class="w-full bg-center bg-no-repeat aspect-video bg-cover rounded-lg" style='background-image:url("https://www.faroshop.co/cdn/shop/collections/Imagenes_Colecciones_3.png?v=1725915039");'></div>
         <p class="text-base font-medium leading-normal mt-2">10% de descuento en tu primera compra</p>
@@ -199,7 +192,6 @@
     </div>
 
   
-    <!-- Info -->
     <div class="rounded-xl glassmorphism-light dark:glassmorphism-dark p-6 mt-8">
       <h3 class="text-lg font-bold leading-tight tracking-[-0.015em]">Ubicación y Horarios</h3>
       <p class="text-sm font-medium leading-normal text-content-light/70 dark:text-content-dark/70 mt-2">Pérez Pareja 0-76 y Gonzalo Suárez Diagonal a la panadería España</p>
@@ -212,7 +204,6 @@
     </div>
   </main>
 
-  <!-- Footer: conectar -->
   <footer id="connect-footer" class="fixed bottom-0 left-0 right-0 p-4 bg-background-light/85 dark:bg-background-dark/85 backdrop-blur-sm z-10">
     <button id="connectBtn" class="w-full btn-agua text-lg py-4 px-6 rounded-xl transition-colors">
       <span id="connectLabel">Preparando red… 15s</span>
@@ -259,6 +250,8 @@
   const slider = document.getElementById('serviciosSlider');
   let idx = 0, autoplayTimer = null;
   function autoplay() {
+    // Se añade una comprobación para evitar errores si el slider no existe
+    if (!slider) return;
     const cards = [...slider.children];
     if (!cards.length) return;
     idx = (idx + 1) % cards.length;
@@ -266,13 +259,17 @@
   }
   function startAuto(){ if(!autoplayTimer) autoplayTimer = setInterval(autoplay, 3800); }
   function stopAuto(){ clearInterval(autoplayTimer); autoplayTimer = null; }
-  startAuto();
-  slider.addEventListener('pointerdown', stopAuto);
-  slider.addEventListener('pointerup', startAuto);
-  slider.addEventListener('mouseenter', stopAuto);
-  slider.addEventListener('mouseleave', startAuto);
-  /* Respeta preferencias del usuario */
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) stopAuto();
+  
+  if (slider) {
+    startAuto();
+    slider.addEventListener('pointerdown', stopAuto);
+    slider.addEventListener('pointerup', startAuto);
+    slider.addEventListener('mouseenter', stopAuto);
+    slider.addEventListener('mouseleave', startAuto);
+    /* Respeta preferencias del usuario */
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) stopAuto();
+  }
+
 
   /* ===== Botón Conectar (15s de preparación + animación) ===== */
   const connectBtn   = document.getElementById('connectBtn');
